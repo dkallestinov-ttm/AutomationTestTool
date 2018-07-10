@@ -216,15 +216,8 @@ public class AutomationTestTool {
                         int otapCompletedCode = testObject.otapCompleted(dsn);
                         if(otapCompletedCode==200){
                             System.out.print("otap Completed for dsn: "+ dsn + " ");
-                        } else {
-                            System.out.println(dsn + " had a problem while making call to otapCompleted!!");
                         }
-                    } else {
-                        System.out.println(dsn + " had a problem while making call to packagesReady!!");
                     }
-
-                } else {
-                    System.out.println(dsn + " had a problem while making call to nextPackages!!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -234,7 +227,11 @@ public class AutomationTestTool {
 
     public static void main(String[] args) {
         int startDSN = 10000000;
-        int endDSN = startDSN + 499;
+        int endDSN = startDSN + 1;
         beginOTAP(startDSN,endDSN);
+        int profileID = 650448;
+        //System.out.println(" ");
+        //System.out.println(" ");
+        //System.out.println("Profile ID, update_type_id, target version: "+ValkyrieSQL.beginExecution(profileID));
     }
 }
