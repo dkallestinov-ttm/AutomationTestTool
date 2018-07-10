@@ -18,8 +18,7 @@ public class AutomationTestTool {
     private static String DSNLISTFILEPATH = System.getProperty("user.dir").replace("\\", "\\\\");
 
     //Date in UTC because Valkyrie needs UTC time to schedule an OTAP
-    private static String getUTCdatetimeAsString()
-    {
+    private static String getUTCdatetimeAsString() {
         final SimpleDateFormat sdf = new SimpleDateFormat(DATEFORMAT);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         final String utcTime = sdf.format(new Date());
@@ -27,7 +26,7 @@ public class AutomationTestTool {
     }
 
     //Method to create DSN List and store the numbers with comma separation. This will be used while giving SubmitAndApprove batch an input of 50,000 dsns in a single API Call.
-    private static void createFileWithDSNs(String filePath, int startDSN, int endDSN){
+    private static void createFileWithDSNs(String filePath, int startDSN, int endDSN) {
         new File(filePath+"/Binaries").mkdirs();
         filePath=filePath+"\\Binaries\\dsn-list.txt";
         PrintWriter writer = null;
@@ -48,8 +47,7 @@ public class AutomationTestTool {
     }
 
     //Returns a string of the DSN List File created by method createFileWithDSNs
-    private static String readLineByLineFromFile(String filePath)
-    {
+    private static String readLineByLineFromFile(String filePath) {
         filePath=filePath+"\\Binaries\\dsn-list.txt";
         StringBuilder contentBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
@@ -65,7 +63,6 @@ public class AutomationTestTool {
 
     //Scheduling Multiple DSNs
     private String submitBatch(String dsn) throws IOException {
-
         String setCurrentDateAsScheduledDate = getUTCdatetimeAsString();
         String JSONToPost = "{\r\n  \"submittedBy\": \"Aditya Test via Java\",\r\n  \"scheduledDate\": \""+setCurrentDateAsScheduledDate+"\",\r\n  \"dsns\": [\r\n    "+dsn+"\r\n  ],\r\n  \"profile\": {\r\n    \"id\": 650448,\r\n    \"name\": \"ASTest1\"\r\n  },\r\n  \"name\": \"API_Tool\"\r\n}";
 
@@ -85,7 +82,6 @@ public class AutomationTestTool {
 
     //Scheduling Single DSN
     private String submitBatch(int dsn) throws IOException {
-
         String setCurrentDateAsScheduledDate = getUTCdatetimeAsString();
         String JSONToPost = "{\r\n  \"submittedBy\": \"Aditya Test via Java\",\r\n  \"scheduledDate\": \""+setCurrentDateAsScheduledDate+"\",\r\n  \"dsns\": [\r\n    "+dsn+"\r\n  ],\r\n  \"profile\": {\r\n    \"id\": 650448,\r\n    \"name\": \"ASTest1\"\r\n  },\r\n  \"name\": \"API_Tool\"\r\n}";
 
@@ -105,7 +101,6 @@ public class AutomationTestTool {
 
     //Scheduling Multiple DSNs
     private String submitAndApproveBatch(String dsn) throws IOException {
-
         String setCurrentDateAsScheduledDate = getUTCdatetimeAsString();
         String JSONToPost = "{\r\n  \"submittedBy\": \"Aditya Test via Java\",\r\n  \"scheduledDate\": \""+setCurrentDateAsScheduledDate+"\",\r\n  \"dsns\": [\r\n    "+dsn+"\r\n  ],\r\n  \"profile\": {\r\n    \"id\": 650448,\r\n    \"name\": \"ASTest1\"\r\n  },\r\n  \"name\": \"API_Tool\"\r\n}";
 
@@ -125,7 +120,6 @@ public class AutomationTestTool {
     }
 
     private int nextPackages(int dsn) throws IOException {
-
         String nextPackagesURLString = "https://valkyrie.qa.connectedfleet.io/nextPackages/"+dsn;
 
         // GET Request for nextPackages endpoint to Valkyrie
@@ -143,7 +137,6 @@ public class AutomationTestTool {
     }
 
     private int packagesReady(int dsn) throws IOException {
-
         String packagesReadyURLString="https://valkyrie.qa.connectedfleet.io/packagesReady/p.mtp."+dsn+".otap.module-ready";
 
         // PUT Request for nextPackages endpoint to Valkyrie
@@ -161,7 +154,6 @@ public class AutomationTestTool {
     }
 
     private int otapCompleted(int dsn) throws IOException {
-
         String pathString = DSNLISTFILEPATH+"\\Binaries\\"+dsn+"_ASTest1.dat";
         String otapCompletedURLString="https://valkyrie.qa.connectedfleet.io/otapCompleted/p.mop."+dsn+".210.icap-rom-version";
 
@@ -181,7 +173,7 @@ public class AutomationTestTool {
     }
 
     //this method is used to generate Binaries as payloads for Rom Version Mid
-    private static void createBinaries(int dsn){
+    private static void createBinaries(int dsn) {
         RomVersionMid romVersionMid = new RomVersionMid();
 
         String DSN = Integer.toString(dsn);
@@ -196,7 +188,7 @@ public class AutomationTestTool {
     }
 
     //This method sets the wheels in motion
-    private static void beginOTAP(int startDSN, int endDSN){
+    private static void beginOTAP(int startDSN, int endDSN) {
         AutomationTestTool testObject = new AutomationTestTool();
         System.out.println("Working Directory = " + DSNLISTFILEPATH);
 
