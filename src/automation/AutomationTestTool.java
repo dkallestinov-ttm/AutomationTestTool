@@ -234,7 +234,7 @@ public class AutomationTestTool {
 
     public static void main(String[] args) {
         int startDSN = 10000000;
-        int endDSN = startDSN + 1;
+        int endDSN = startDSN + 499;
         beginOTAP(startDSN,endDSN);
     }
 }
