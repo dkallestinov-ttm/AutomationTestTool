@@ -32,11 +32,10 @@ public class AutomationTestTool {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(filePath, "UTF-8");
-            for(int i = startDSN ; i <= endDSN ; i++){
-                if(i != endDSN){
+            for(int i = startDSN ; i <= endDSN ; i++) {
+                if(i != endDSN) {
                     writer.println(i+",");
-                }
-                else{
+                } else {
                     writer.println(i);
                 }
             }
@@ -49,13 +48,11 @@ public class AutomationTestTool {
     //Returns a string of the DSN List File created by method createFileWithDSNs
     private static String readLineByLineFromFile(String filePath) {
         filePath=filePath+"\\Binaries\\dsn-list.txt";
+        System.out.println("Reading DSN List file from " + filePath);
         StringBuilder contentBuilder = new StringBuilder();
-        try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
-        {
+        try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8)) {
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return contentBuilder.toString();
@@ -77,6 +74,7 @@ public class AutomationTestTool {
                 .build();
 
         Response response = client.newCall(request).execute();
+        System.out.print("submitBatch: "+response.code());
         return response.body().string();
     }
 
@@ -96,6 +94,7 @@ public class AutomationTestTool {
                 .build();
 
         Response response = client.newCall(request).execute();
+        System.out.print("submitBatch: "+response.code());
         return response.body().string();
     }
 
@@ -175,14 +174,12 @@ public class AutomationTestTool {
     //this method is used to generate Binaries as payloads for Rom Version Mid
     private static void createBinaries(int dsn) {
         RomVersionMid romVersionMid = new RomVersionMid();
-
         String DSN = Integer.toString(dsn);
-
         String[] romVersionMidPayload = {DSN+"_ASTest1.dat",DSN, "650000", "1"};
-        try{
+        try {
             //generating Rom Version Mid binary payload
             romVersionMid.execute(romVersionMidPayload);
-        }catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -219,11 +216,15 @@ public class AutomationTestTool {
                         int otapCompletedCode = testObject.otapCompleted(dsn);
                         if(otapCompletedCode==200){
                             System.out.print("otap Completed for dsn: "+ dsn + " ");
+                        } else {
+                            System.out.println(dsn + " had a problem while making call to otapCompleted!!");
                         }
+                    } else {
+                        System.out.println(dsn + " had a problem while making call to packagesReady!!");
                     }
-                }
-                else {
-                    System.out.println(dsn + "had a problem!!");
+
+                } else {
+                    System.out.println(dsn + " had a problem while making call to nextPackages!!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

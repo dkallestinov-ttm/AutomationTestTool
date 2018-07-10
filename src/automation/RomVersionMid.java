@@ -110,6 +110,6 @@ public class RomVersionMid
             e.printStackTrace(System.err);
         }
 
-        System.out.printf("wrote dsn: %d to file: '%s'\n", romVersionMidArgs.dsn, romVersionMidArgs.fileName);
+        System.out.println("wrote dsn: " + romVersionMidArgs.dsn + " to file: " + romVersionMidArgs.fileName);
     }
 }
