@@ -3,38 +3,36 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>biz.iseinc</groupId>
   <artifactId>AutomationTestTool</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
   <version>1.0</version>
   <name>AutomationTestTool</name>
-
   <inceptionYear>2018</inceptionYear>
   <url>https://github.com/asatalkar-ttm/AutomationTestTool</url>
-
   <scm>
     <url>https://github.com/asatalkar-ttm/AutomationTestTool</url>
-
   </scm>
 
   <properties>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
   
   <repositories>
-<!--
-    <repository>
-      <id>artifactory</id>
-      <url>https://github.com/maven-eclipse/swt-repo/</url>
-    </repository>
--->
   </repositories>
 
-  <dependencyManagement>
-    <dependencies>
+  <dependencies>
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>1.14.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>2.3.0</version>
+      </dependency>
       <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
@@ -46,9 +44,11 @@
         <version>4.12</version>
         <scope>test</scope>
       </dependency>
-    </dependencies>
-  </dependencyManagement>
+  </dependencies>
+  
   <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+ 
     <pluginManagement>
       <plugins>
         <plugin>
@@ -61,8 +61,8 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.7.0</version>
           <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
+            <source>1.8</source>
+            <target>1.8</target>
           </configuration>
         </plugin>
         <plugin>
@@ -99,18 +99,5 @@
     </pluginManagement>
   </build>
   
-  <profiles>
-    <profile>
-      <id>code</id>
-      <activation>
-       <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
-        <profile>
-      <id>build</id>
-      <activation>
-       <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
-  </profiles>
+
 </project>
