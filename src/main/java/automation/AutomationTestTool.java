@@ -15,7 +15,14 @@ import com.squareup.okhttp.*;
 public class AutomationTestTool {
     private OkHttpClient client = new OkHttpClient();
     private static final String DATEFORMAT = "yyyy-MM-dd";
-    private static String DSNLISTFILEPATH = System.getProperty("user.dir").replace("\\", "\\\\");
+    private static String CURRENTDIRECTORYFILEPATH = System.getProperty("user.dir");
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BASICAUTH = "Basic b21uaUFkYXB0ZXI6azN5U2l4cmlkMW9n";
+    private static final String VALKYRIEQAURL = "https://valkyrie.qa.connectedfleet.io";
+    private static final String APPLICATIONJSON = "application/json";
+    private static final String  CACHECONTROL = "Cache-Control";
+    private static final String CONTENTTYPE = "Content-Type";
+    private static final String NOCACHE = "no-cache";
 
     //Date in UTC because Valkyrie needs UTC time to schedule an OTAP
     private static String getUTCdatetimeAsString() {
@@ -27,8 +34,8 @@ public class AutomationTestTool {
 
     //Method to create DSN List and store the numbers with comma separation. This will be used while giving SubmitAndApprove batch an input of 50,000 dsns in a single API Call.
     private static void createFileWithDSNs(String filePath, int startDSN, int endDSN) {
-        new File(filePath+"/Binaries").mkdirs();
-        filePath=filePath+"\\Binaries\\dsn-list.txt";
+        new File(filePath + File.separator + "Binaries").mkdirs();
+        filePath = filePath + File.separator + "Binaries" + File.separator + "dsn-list.txt";
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(filePath, "UTF-8");
@@ -47,7 +54,7 @@ public class AutomationTestTool {
 
     //Returns a string of the DSN List File created by method createFileWithDSNs
     private static String readLineByLineFromFile(String filePath) {
-        filePath=filePath+"\\Binaries\\dsn-list.txt";
+        filePath = filePath + File.separator + "Binaries" + File.separator + "dsn-list.txt";
         System.out.println("Reading DSN List file from " + filePath);
         StringBuilder contentBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8)) {
@@ -64,13 +71,13 @@ public class AutomationTestTool {
         String JSONToPost = "{\r\n  \"submittedBy\": \"Aditya Test via Java\",\r\n  \"scheduledDate\": \""+setCurrentDateAsScheduledDate+"\",\r\n  \"dsns\": [\r\n    "+dsn+"\r\n  ],\r\n  \"profile\": {\r\n    \"id\": 650448,\r\n    \"name\": \"ASTest1\"\r\n  },\r\n  \"name\": \"API_Tool\"\r\n}";
 
         // POST Request to SUBMIT a batch to Valkyrie
-        MediaType mediaType = MediaType.parse("application/json");
+        MediaType mediaType = MediaType.parse(APPLICATIONJSON);
         RequestBody body = RequestBody.create(mediaType, JSONToPost);
         Request request = new Request.Builder()
-                .url("https://valkyrie.qa.connectedfleet.io/submitBatch")
+                .url(VALKYRIEQAURL+"/submitBatch")
                 .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Cache-Control", "no-cache")
+                .addHeader(CONTENTTYPE, APPLICATIONJSON)
+                .addHeader(CACHECONTROL, NOCACHE)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -84,13 +91,13 @@ public class AutomationTestTool {
         String JSONToPost = "{\r\n  \"submittedBy\": \"Aditya Test via Java\",\r\n  \"scheduledDate\": \""+setCurrentDateAsScheduledDate+"\",\r\n  \"dsns\": [\r\n    "+dsn+"\r\n  ],\r\n  \"profile\": {\r\n    \"id\": 650448,\r\n    \"name\": \"ASTest1\"\r\n  },\r\n  \"name\": \"API_Tool\"\r\n}";
 
         // POST Request to SUBMIT a batch to Valkyrie
-        MediaType mediaType = MediaType.parse("application/json");
+        MediaType mediaType = MediaType.parse(APPLICATIONJSON);
         RequestBody body = RequestBody.create(mediaType, JSONToPost);
         Request request = new Request.Builder()
-                .url("https://valkyrie.qa.connectedfleet.io/submitBatch")
+                .url(VALKYRIEQAURL+"/submitBatch")
                 .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Cache-Control", "no-cache")
+                .addHeader(CONTENTTYPE, APPLICATIONJSON)
+                .addHeader(CACHECONTROL, NOCACHE)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -104,13 +111,13 @@ public class AutomationTestTool {
         String JSONToPost = "{\r\n  \"submittedBy\": \"Aditya Test via Java\",\r\n  \"scheduledDate\": \""+setCurrentDateAsScheduledDate+"\",\r\n  \"dsns\": [\r\n    "+dsn+"\r\n  ],\r\n  \"profile\": {\r\n    \"id\": 650448,\r\n    \"name\": \"ASTest1\"\r\n  },\r\n  \"name\": \"API_Tool\"\r\n}";
 
         // POST Request to SUBMIT a batch to Valkyrie
-        MediaType mediaType = MediaType.parse("application/json");
+        MediaType mediaType = MediaType.parse(APPLICATIONJSON);
         RequestBody body = RequestBody.create(mediaType, JSONToPost);
         Request request = new Request.Builder()
-                .url("https://valkyrie.qa.connectedfleet.io/submitAndApproveBatch")
+                .url(VALKYRIEQAURL+"/submitAndApproveBatch")
                 .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Cache-Control", "no-cache")
+                .addHeader(CONTENTTYPE, APPLICATIONJSON)
+                .addHeader(CACHECONTROL, NOCACHE)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -119,14 +126,14 @@ public class AutomationTestTool {
     }
 
     private int nextPackages(int dsn) throws IOException {
-        String nextPackagesURLString = "https://valkyrie.qa.connectedfleet.io/nextPackages/"+dsn;
+        String nextPackagesURLString = VALKYRIEQAURL+"/nextPackages/"+dsn;
 
         // GET Request for nextPackages endpoint to Valkyrie
         Request request = new Request.Builder()
                 .url(nextPackagesURLString)
                 .get()
-                .addHeader("Authorization", "Basic b21uaUFkYXB0ZXI6azN5U2l4cmlkMW9n")
-                .addHeader("Cache-Control", "no-cache")
+                .addHeader(AUTHORIZATION, BASICAUTH)
+                .addHeader(CACHECONTROL, NOCACHE)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -136,14 +143,14 @@ public class AutomationTestTool {
     }
 
     private int packagesReady(int dsn) throws IOException {
-        String packagesReadyURLString="https://valkyrie.qa.connectedfleet.io/packagesReady/p.mtp."+dsn+".otap.module-ready";
+        String packagesReadyURLString=VALKYRIEQAURL+"/packagesReady/p.mtp."+dsn+".otap.module-ready";
 
         // PUT Request for nextPackages endpoint to Valkyrie
         Request request = new Request.Builder()
                 .url(packagesReadyURLString)
                 .put(null)
-                .addHeader("Authorization", "Basic b21uaUFkYXB0ZXI6azN5U2l4cmlkMW9n")
-                .addHeader("Cache-Control", "no-cache")
+                .addHeader(AUTHORIZATION, BASICAUTH)
+                .addHeader(CACHECONTROL, NOCACHE)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -152,17 +159,17 @@ public class AutomationTestTool {
         return response.code();
     }
 
-    private int otapCompleted(int dsn) throws IOException {
-        String pathString = DSNLISTFILEPATH+"\\Binaries\\"+dsn+"_ASTest1.dat";
-        String otapCompletedURLString="https://valkyrie.qa.connectedfleet.io/otapCompleted/p.mop."+dsn+".210.icap-rom-version";
+    private int otapCompleted(int dsn, String profilename) throws IOException {
+        String pathString = CURRENTDIRECTORYFILEPATH +File.separator+"Binaries"+File.separator+dsn+"_"+profilename+".dat";
+        String otapCompletedURLString=VALKYRIEQAURL+"/otapCompleted/p.mop."+dsn+".210.icap-rom-version";
 
         // POST Request for nextPackages endpoint to Valkyrie
         MediaType mediaType = MediaType.parse("application/octet-stream");
         Request request = new Request.Builder()
                 .url(otapCompletedURLString)
                 .post(RequestBody.create(mediaType, Files.readAllBytes(Paths.get(pathString))))
-                .addHeader("Authorization", "Basic b21uaUFkYXB0ZXI6azN5U2l4cmlkMW9n")
-                .addHeader("Cache-Control", "no-cache")
+                .addHeader(AUTHORIZATION, BASICAUTH)
+                .addHeader(CACHECONTROL, NOCACHE)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -172,10 +179,12 @@ public class AutomationTestTool {
     }
 
     //this method is used to generate Binaries as payloads for Rom Version Mid
-    private static void createBinaries(int dsn) {
+    private static void createBinaries(int dsn, String profileName, String romVersionMidArgumentsUpdateTypeIdAndTargetVersions) {
         RomVersionMid romVersionMid = new RomVersionMid();
         String DSN = Integer.toString(dsn);
-        String[] romVersionMidPayload = {DSN+"_ASTest1.dat",DSN, "650000", "1"};
+        String[] romVersionMidName = {DSN+"_"+profileName+".dat",DSN};
+        String[] updateTypeID_TargetVerdsions = romVersionMidArgumentsUpdateTypeIdAndTargetVersions.split(" ");
+        String[] romVersionMidPayload = ValkyrieSQL.concatenateArrays(romVersionMidName,updateTypeID_TargetVerdsions);
         try {
             //generating Rom Version Mid binary payload
             romVersionMid.execute(romVersionMidPayload);
@@ -185,15 +194,15 @@ public class AutomationTestTool {
     }
 
     //This method sets the wheels in motion
-    private static void beginOTAP(int startDSN, int endDSN) {
+    private static void beginOTAP(int startDSN, int endDSN, String profileName, String romVersionMidArguments_UpdateTypeID_AND_TargetVersions) {
         AutomationTestTool testObject = new AutomationTestTool();
-        System.out.println("Working Directory = " + DSNLISTFILEPATH);
+        System.out.println("Working Directory = " + CURRENTDIRECTORYFILEPATH);
 
         //create DSN List
-        createFileWithDSNs(DSNLISTFILEPATH,startDSN,endDSN);
+        createFileWithDSNs(CURRENTDIRECTORYFILEPATH,startDSN,endDSN);
 
         //retrieve DSN List to be given as input to /submitAndApproveBatch for scheduling multiple DSNs within the same calls
-        String dsnList = readLineByLineFromFile(DSNLISTFILEPATH);
+        String dsnList = readLineByLineFromFile(CURRENTDIRECTORYFILEPATH);
 
         //print DSN List
         System.out.println(dsnList);
@@ -208,12 +217,12 @@ public class AutomationTestTool {
         for(int dsn = startDSN ; dsn <= endDSN ; dsn++){
             try {
                 //create a Binary for the recently submitted dsn for OTAP
-                createBinaries(dsn);
+                createBinaries(dsn,profileName, romVersionMidArguments_UpdateTypeID_AND_TargetVersions);
                 int nextPackagesCode = testObject.nextPackages(dsn);
                 if(nextPackagesCode==200 || nextPackagesCode==204 || nextPackagesCode==304){
                     int packagesReadyCode = testObject.packagesReady(dsn);
                     if(packagesReadyCode == 200 || packagesReadyCode == 204){
-                        int otapCompletedCode = testObject.otapCompleted(dsn);
+                        int otapCompletedCode = testObject.otapCompleted(dsn,profileName);
                         if(otapCompletedCode==200){
                             System.out.print("otap Completed for dsn: "+ dsn + " ");
                         }
@@ -228,10 +237,13 @@ public class AutomationTestTool {
     public static void main(String[] args) {
         int startDSN = 10000000;
         int endDSN = startDSN + 1;
-        beginOTAP(startDSN,endDSN);
-        int profileID = 650448;
-        //System.out.println(" ");
-        //System.out.println(" ");
-        //System.out.println("Profile ID, update_type_id, target version: "+ValkyrieSQL.beginExecution(profileID));
+//        int profileID = 650448;
+        int profileID = 16300006;
+        String profileName = ValkyrieSQL.getProfileNameFromTable(profileID).toString();
+        String romVersionMidArguments_UpdateTypeID_AND_TargetVersions = ValkyrieSQL.beginExecution(profileID);
+        beginOTAP(startDSN,endDSN,profileName, romVersionMidArguments_UpdateTypeID_AND_TargetVersions);
+//        System.out.println(" ");
+//        System.out.println(" ");
+//        System.out.println("update_type_id, target version: "+ValkyrieSQL.beginExecution(profileID));
     }
 }
