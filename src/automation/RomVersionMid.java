@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 
 public class RomVersionMid
 {
-    static String DSNLISTFILEPATH = System.getProperty("user.dir").replace("\\", "\\\\");
     /*
     let updateTypeAndVersionParser = new Parser()
         .endianess('big')
@@ -37,10 +36,9 @@ public class RomVersionMid
             length: 'icapRomVersionMidUpdateCount'
     })
      */
-    public static void execute( String[] arguments ) throws Exception
+    public static void execute(String filePath, String[] arguments) throws Exception
     {
         RomVersionMidArgs romVersionMidArgs = new RomVersionMidArgs(arguments);
-        String filePath=DSNLISTFILEPATH+"\\Binaries\\";
         new File(filePath).mkdir();
 
         // https://confluence.tekla.com/display/PNETTECH/MID+210%3A+OBC+Services+BLOB+OBC+to+PFM
