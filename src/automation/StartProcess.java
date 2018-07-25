@@ -25,7 +25,7 @@ public class StartProcess {
         System.out.println("update_type_id, target version: " + updateTypeIdAndTargetVersion);
     }
 
-    //This method takes care of
+    //This method takes care of making api calls to /nextPackages /packagesReady and /otapsCompleted for all DSNs
     public static void beginOTAP(int startDSN, int endDSN, String profileName) {
         ApiCall apiCall = new ApiCall();
         System.out.println("");
