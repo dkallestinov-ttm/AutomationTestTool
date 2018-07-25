@@ -96,7 +96,7 @@ public class ApiCall {
 
         Response response = client.newCall(request).execute();
         String responseString = response.body().string();
-        System.out.print("submitBatch Response Body : " + responseString + " submitBatch ResponseCode : " + response.code());
+        System.out.print("submitBatch Response Body : " + responseString + " submitBatch ResponseCode : " + response.code() + " ");
         return responseString;
     }
 

@@ -21,28 +21,27 @@ public class StartProcess {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        beginOTAP(integerStartDSN,integerEndDSN,profileName, updateTypeIdAndTargetVersion);
+        beginOTAP(integerStartDSN,integerEndDSN,profileName);
         System.out.println("update_type_id, target version: " + updateTypeIdAndTargetVersion);
     }
 
-    //This method sets the wheels in motion
-    public static void beginOTAP(int startDSN, int endDSN, String profileName, String updateTypeIdAndTargetVersion) {
-        ApiCall testObject = new ApiCall();
-
+    //This method takes care of
+    public static void beginOTAP(int startDSN, int endDSN, String profileName) {
+        ApiCall apiCall = new ApiCall();
+        System.out.println("");
         for(int dsn = startDSN ; dsn <= endDSN ; dsn++){
             try {
-                //create a Binary for the recently submitted dsn for OTAP
-                //createBinaries(dsn,profileName, romVersionMidArguments_UpdateTypeID_AND_TargetVersions);
-                int nextPackagesCode = testObject.nextPackages(dsn);
+                int nextPackagesCode = apiCall.nextPackages(dsn);
                 if(nextPackagesCode==200 || nextPackagesCode==204 || nextPackagesCode==304){
-                    int packagesReadyCode = testObject.packagesReady(dsn);
+                    int packagesReadyCode = apiCall.packagesReady(dsn);
                     if(packagesReadyCode == 200 || packagesReadyCode == 204){
-                        int otapCompletedCode = testObject.otapCompleted(dsn,profileName);
+                        int otapCompletedCode = apiCall.otapCompleted(dsn,profileName);
                         if(otapCompletedCode==200){
                             System.out.print("otap Completed for dsn: "+ dsn + " ");
                         }
                     }
                 }
+                System.out.println("");
             } catch (Exception e) {
                 e.printStackTrace();
             }
