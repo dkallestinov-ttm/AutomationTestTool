@@ -3,10 +3,54 @@ package automation;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Random;
 
 public class RomVersionMid
 {
-    static String DSNLISTFILEPATH = System.getProperty("user.dir").replace("\\", "\\\\");
+    static int BLOB_MID_HEADER_MID_LENGTH = 64;
+    static Random MESSAGE_ID_GENERATOR = new Random();
+
+    String fileName;
+    String outputDir;
+    int dsn;
+    short midHeaderMessageId, icapRomVersionMidHeaderMessageId;
+    InstalledSoftware[] installedSoftware;
+
+    public RomVersionMid(String dir, String fileName, int dsn, String[] args) throws Exception {
+        this(dir, fileName, dsn, parseInstalledSoftware(args));
+    }
+
+    public RomVersionMid(String dir, String fileName, int dsn, InstalledSoftware[] installedSoftware) throws Exception{
+        this.fileName = fileName;
+        this.outputDir = dir;
+        this.dsn = dsn;
+        this.installedSoftware = installedSoftware;
+        this.midHeaderMessageId = this.getRandomId();
+        this.icapRomVersionMidHeaderMessageId = this.getRandomId();
+    }
+
+    private static InstalledSoftware[] parseInstalledSoftware(String[] args) throws Exception {
+        if (args.length % 2 == 1) {
+            throw new IllegalArgumentException(String.format("Expected an even number of arguments, got %S", args.length));
+        }
+        InstalledSoftware[] parsed = new InstalledSoftware[args.length/2];
+        int index = 0, updateTypeId = 0, version;
+
+        for (int i=0; i < args.length; i++) {
+            if (i % 2 == 0) {
+                index = i / 2;
+                updateTypeId = Integer.parseInt(args[i]);
+            } else {
+                version = Integer.parseInt(args[i]);
+                parsed[index] = new InstalledSoftware(updateTypeId, version);
+            }
+        }
+        return parsed;
+    }
+
+    private short getRandomId() {
+        return (short) (MESSAGE_ID_GENERATOR.nextInt(Short.MAX_VALUE) & Integer.MAX_VALUE);
+    }
     /*
     let updateTypeAndVersionParser = new Parser()
         .endianess('big')
@@ -37,11 +81,20 @@ public class RomVersionMid
             length: 'icapRomVersionMidUpdateCount'
     })
      */
-    public static void execute( String[] arguments ) throws Exception
-    {
-        RomVersionMidArgs romVersionMidArgs = new RomVersionMidArgs(arguments);
-        String filePath=DSNLISTFILEPATH+"\\Binaries\\";
-        new File(filePath).mkdir();
+    public void write() throws Exception {
+        String binaryDirPath = outputDir + "mids/";
+        File binaryDir = new File(binaryDirPath);
+
+        if (!binaryDir.exists()) {
+            binaryDir.mkdir();
+        }
+
+        String[] existingBinaries = binaryDir.list();
+
+        for (String binaryName : existingBinaries) {
+            File binary = new File(binaryDirPath, binaryName);
+            //binary.delete();
+        }
 
         // https://confluence.tekla.com/display/PNETTECH/MID+210%3A+OBC+Services+BLOB+OBC+to+PFM
         // https://confluence.tekla.com/display/PNETTECH/MID+216%3A+Return+ICAP+ROM+Version
@@ -73,16 +126,13 @@ public class RomVersionMid
             updateType                         000002C2 :        706
             version                            00003F9B :      16283
          */
-        int blobMidHeaderMidLength = 64;
-        int midHeaderMessageId = 210;
-        int icapRomVersionMidHeaderMessageId = 216;
 
-        try (FileOutputStream fos = new FileOutputStream(filePath+ romVersionMidArgs.fileName);
+        try (FileOutputStream fos = new FileOutputStream(binaryDirPath + this.fileName);
              DataOutputStream dos = new DataOutputStream(fos)) {
 
-            dos.writeInt(romVersionMidArgs.dsn);
-            dos.writeShort(blobMidHeaderMidLength);
-            dos.writeShort(midHeaderMessageId);
+            dos.writeInt(this.dsn);
+            dos.writeShort(BLOB_MID_HEADER_MID_LENGTH);
+            dos.writeShort(this.midHeaderMessageId);
             dos.writeInt(0);
             //dos.writeUTF(""); // blobMidHeaderSchedule
             dos.writeByte(0);
@@ -95,21 +145,21 @@ public class RomVersionMid
             dos.writeInt(1); // blobMidEntireBlobSize
             dos.writeInt(1); // blobMidBlobBytesFollowing
             dos.writeShort(1); // icapRomVersionMidHeaderMidLength
-            dos.writeShort(icapRomVersionMidHeaderMessageId); // icapRomVersionMidHeaderMessageId
+            dos.writeShort(this.icapRomVersionMidHeaderMessageId); // icapRomVersionMidHeaderMessageId
             dos.writeInt(1); // icapRomVersionMidHeaderAsn
             //dos.writeUTF(""); // icapRomVersionMidHeaderSchedule
             dos.writeByte(0);
 
-            dos.writeInt(romVersionMidArgs.versions.size()); // icapRomVersionMidUpdateCount
-            for (int index = 0; index< romVersionMidArgs.versions.size(); index+=1) {
-                dos.writeInt(romVersionMidArgs.updateTypeIds.get(index));
-                dos.writeInt(romVersionMidArgs.versions.get(index));
+            dos.writeInt(this.installedSoftware.length); // icapRomVersionMidUpdateCount
+            for (int i = 0; i< this.installedSoftware.length; i++) {
+                dos.writeInt(this.installedSoftware[i].getUpdateTypeId());
+                dos.writeInt(this.installedSoftware[i].getVersion());
             }
         } catch (Exception e) {
             System.err.println(e);
             e.printStackTrace(System.err);
         }
 
-        System.out.println("wrote dsn: " + romVersionMidArgs.dsn + " to file: " + romVersionMidArgs.fileName);
+        System.out.println("wrote dsn: " + this.dsn + " to file: " + this.fileName);
     }
 }
