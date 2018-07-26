@@ -182,14 +182,14 @@ public class AutomationTestTool
 
     //this method is used to generate Binaries as payloads for Rom Version Mid
     private static void createBinaries(int dsn, String profileName, String romVersionMidArgumentsUpdateTypeIdAndTargetVersions) {
-        RomVersionMid romVersionMid = new RomVersionMid();
+        try {
+        RomVersionMid romVersionMid = new RomVersionMid(profileName, dsn, new String[0]);
         String DSN = Integer.toString(dsn);
         String[] romVersionMidName = {DSN+"_"+profileName+".dat",DSN};
         String[] updateTypeID_TargetVerdsions = romVersionMidArgumentsUpdateTypeIdAndTargetVersions.split(" ");
         String[] romVersionMidPayload = ValkyrieSQL.concatenateArrays(romVersionMidName,updateTypeID_TargetVerdsions);
-        try {
             //generating Rom Version Mid binary payload
-            romVersionMid.execute(romVersionMidPayload);
+            romVersionMid.write();
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -247,13 +247,13 @@ public class AutomationTestTool
         int endDSN = startDSN + 1;
 //        int profileID = 650448;
         int profileID = 16300006;
-        String profileName = ValkyrieSQL.getProfileNameFromTable(profileID).toString();
-        String romVersionMidArguments_UpdateTypeID_AND_TargetVersions = ValkyrieSQL.beginExecution(profileID);
-        beginOTAP(startDSN,endDSN,profileName, romVersionMidArguments_UpdateTypeID_AND_TargetVersions);
+//        String profileName = automation.ValkyrieSQL.getProfileNameFromTable(profileID).toString();
+//        String romVersionMidArguments_UpdateTypeID_AND_TargetVersions = automation.ValkyrieSQL.beginExecution(profileID);
+//        beginOTAP(startDSN,endDSN,profileName, romVersionMidArguments_UpdateTypeID_AND_TargetVersions);
 //        System.out.println(" ");
 //        System.out.println(" ");
-//        System.out.println("update_type_id, target version: "+ValkyrieSQL.beginExecution(profileID));
+//        System.out.println("update_type_id, target version: "+automation.ValkyrieSQL.beginExecution(profileID));
     }
 
 
-        }
+}
