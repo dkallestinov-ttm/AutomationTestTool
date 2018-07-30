@@ -134,7 +134,7 @@ public class RomVersionMid
             dos.writeShort(BLOB_MID_HEADER_MID_LENGTH);
             dos.writeShort(this.midHeaderMessageId);
             dos.writeInt(0);
-            //dos.writeUTF(""); // blobMidHeaderSchedule
+            dos.writeUTF(""); // blobMidHeaderSchedule
             dos.writeByte(0);
 
             dos.writeInt(1); // blobMidRecordType
@@ -147,7 +147,7 @@ public class RomVersionMid
             dos.writeShort(1); // icapRomVersionMidHeaderMidLength
             dos.writeShort(this.icapRomVersionMidHeaderMessageId); // icapRomVersionMidHeaderMessageId
             dos.writeInt(1); // icapRomVersionMidHeaderAsn
-            //dos.writeUTF(""); // icapRomVersionMidHeaderSchedule
+            dos.writeUTF(""); // icapRomVersionMidHeaderSchedule
             dos.writeByte(0);
 
             dos.writeInt(this.installedSoftware.length); // icapRomVersionMidUpdateCount
