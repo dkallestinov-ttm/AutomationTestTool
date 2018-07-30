@@ -1,5 +1,7 @@
 .idea/
 Binaries/
 out/
-Important_text_file.txt
-AutomationTestTool.iml
+
+apache-jmeter-4.0/
+/target
+/*.iml
