@@ -1,32 +1,35 @@
 package service;
 
-import automation.AutomationTestTool;
+
+import automation.BinaryManager;
+import automation.ValkyrieDAO;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
-
-import java.io.File;
-
 
 /**
  * Created on 7/13/2018.
  */
 public class MidPayloadSampler implements org.apache.jmeter.protocol.java.sampler.JavaSamplerClient {
 
-    DataFileFactory dataFileFactory;
+    private String url;
+    private String username;
+    private String password;
 
     @Override
     public void setupTest(JavaSamplerContext javaSamplerContext) {
-        dataFileFactory = new DataFileFactory(new File(javaSamplerContext.getJMeterVariables().get("datadir")));
+        url = "jdbc:mysql://localhost:3306/valkyrie_db";
+        username = "valkyrie_db";
+        password = "valkyrie_db";
     }
 
     @Override
     public org.apache.jmeter.samplers.SampleResult runTest(JavaSamplerContext javaSamplerContext) {
         String[] args = new String[] {};
-        new AutomationTestTool().setup(args);
+
         SampleResult sr =  new SampleResult();
-        String datadir = javaSamplerContext.getJMeterVariables().get("datadir");
+        String datadir = "C:\\Development\\oem\\development\\otap\\loadTest\\data\\"; //javaSamplerContext.getJMeterVariables().get("datadir");
         try {
-            dataFileFactory.createFile("testfile.mid");
+            createBinaries(datadir,44600001,  new String[] {"999887777"});
         } catch (Exception e)
         {
             sr.setResponseCode("500");
@@ -39,9 +42,14 @@ public class MidPayloadSampler implements org.apache.jmeter.protocol.java.sample
         return sr;
     }
 
+    private void createBinaries(String dir, int profileId, String[] dsns) {
+        BinaryManager bm = new BinaryManager(dir, new ValkyrieDAO(url, username, password));
+
+        bm.writeBinaries(profileId, dsns);
+    }
+
     @Override
     public void teardownTest(JavaSamplerContext javaSamplerContext) {
-        dataFileFactory = null;
     }
 
     @Override

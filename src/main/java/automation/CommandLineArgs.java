@@ -2,7 +2,7 @@ package automation;
 
 import com.github.jankroken.commandline.annotations.*;
 
-import java.nio.Buffer;
+import java.util.ArrayList;
 
 public class CommandLineArgs {
 
@@ -12,7 +12,7 @@ public class CommandLineArgs {
     private String password = null;
     private String driver = null;
     private String filePath = null;
-    private String[] looseArgs = null;
+    private ArrayList<String> looseArgs = new ArrayList<>();
 
     @Option
     @ShortSwitch("h")
@@ -88,11 +88,11 @@ public class CommandLineArgs {
 
     @Option
     @LooseArguments
-    public void setLooseArgs(String args) {
-        this.looseArgs = args.split(" ");
+    public void setLooseArgs(String arg) {
+        this.looseArgs.add(arg);
     }
 
-    public String[] getLooseArgs() {
+    public ArrayList<String> getLooseArgs() {
         return this.looseArgs;
     }
 

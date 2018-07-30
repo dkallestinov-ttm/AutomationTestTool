@@ -7,13 +7,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 
 import com.github.jankroken.commandline.*;
 import com.squareup.okhttp.*;
-
 
 public class AutomationTestTool {
     private static OkHttpClient client = new OkHttpClient();
@@ -131,10 +131,11 @@ public class AutomationTestTool {
 
     //this method is used to generate Binaries as payloads for Rom Version Mid
     private static void createBinaries(CommandLineArgs args) {
-        int profileId = Integer.parseInt(args.getLooseArgs()[1]);
-        String[] dsns = new String[args.getLooseArgs().length - 2];
+        ArrayList<String> looseArgs = args.getLooseArgs();
+        int profileId = Integer.parseInt(looseArgs.get(1));
+        String[] dsns = new String[looseArgs.size() - 2];
 
-        System.arraycopy(args.getLooseArgs(), 2, dsns, 0, dsns.length);
+        looseArgs.subList(2, looseArgs.size()).toArray(dsns);
 
         BinaryManager manager = BinaryManagerFactory.create(args);
 
@@ -142,10 +143,11 @@ public class AutomationTestTool {
     }
 
     private static void smokeTest(CommandLineArgs args) {
-        int profileId = Integer.parseInt(args.getLooseArgs()[1]);
-        String[] dsns = new String[args.getLooseArgs().length - 2];
+        ArrayList<String> looseArgs = args.getLooseArgs();
+        int profileId = Integer.parseInt(looseArgs.get(1));
+        String[] dsns = new String[looseArgs.size() - 2];
 
-        System.arraycopy(args.getLooseArgs(), 2, dsns, 0, dsns.length);
+        looseArgs.subList(2, looseArgs.size()).toArray(dsns);
 
         BinaryManager manager = BinaryManagerFactory.create(args);
 
@@ -201,11 +203,11 @@ public class AutomationTestTool {
                 return;
             }
 
-            if (clArgs.getLooseArgs().length == 0) {
+            if (clArgs.getLooseArgs().size() == 0) {
                 throw new IllegalArgumentException("Command undefined. Use --help for available commands");
             }
 
-            String cmd = clArgs.getLooseArgs()[0];
+            String cmd = clArgs.getLooseArgs().get(0);
 
             switch(cmd) {
                 case "createBinaries":
@@ -226,4 +228,6 @@ public class AutomationTestTool {
             System.exit(1);
         }
     }
+
+
 }

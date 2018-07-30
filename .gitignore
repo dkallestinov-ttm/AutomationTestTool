@@ -1,7 +1,7 @@
 .idea/
 Binaries/
 out/
-Important_text_file.txt
+
 apache-jmeter-4.0/
 /target
 /*.iml

@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 public class ValkyrieDAO {
-    private static final String DEFAULT_CONN_URL = "jdbc:mysql://qa-security-user.ckcpzgmqvbbt.us-east-1.rds.amazonaws.com";
+    private static final String DEFAULT_CONN_URL = "jdbc:mysql://localhost:3306";
 
     private String connectionUrl;
     private String dbUser;
