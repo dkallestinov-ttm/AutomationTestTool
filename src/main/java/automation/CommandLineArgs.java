@@ -117,7 +117,7 @@ public class CommandLineArgs {
         helpMsgBuf.append("\t-u, --user        The User to connect to the database with. Defaults to \"valkyrie_db\"\n");
         helpMsgBuf.append("\t-p, --password    Password to use for the database connection. Defaults to the password for the valkyrie_db user\n");
         helpMsgBuf.append("\t-d, --driver      Driver to use for database connection. Defaults to \"com.mysql.cj.jdbc.Driver\"\n");
-        helpMsgBuf.append("\t-t, --targetDir   Where to store the generated binary files. Defaults to ./Binaries");
+        helpMsgBuf.append("\t-t, --targetDir   Where to store the generated binary files. Defaults to ./Binaries\n");
         helpMsgBuf.append("\t-e, --env         What environment to use for API calls and database connections. 'local', 'dev', or 'qa'");
         helpMsgBuf.append("\n");
         helpMsgBuf.append("Actions:\n");
