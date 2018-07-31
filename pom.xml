@@ -71,6 +71,11 @@
         <version>4.12</version>
         <scope>test</scope>
       </dependency>
+    <dependency>
+      <groupId>com.github.jankroken</groupId>
+      <artifactId>commandline</artifactId>
+      <version>1.7.0</version>
+    </dependency>
   </dependencies>
   
   <build>
