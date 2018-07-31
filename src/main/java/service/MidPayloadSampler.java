@@ -1,6 +1,6 @@
 package service;
 
-
+import automation.Environment;
 import automation.BinaryManager;
 import automation.ValkyrieDAO;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
@@ -11,13 +11,13 @@ import org.apache.jmeter.samplers.SampleResult;
  */
 public class MidPayloadSampler implements org.apache.jmeter.protocol.java.sampler.JavaSamplerClient {
 
-    private String url;
+    private Environment env;
     private String username;
     private String password;
 
     @Override
     public void setupTest(JavaSamplerContext javaSamplerContext) {
-        url = "jdbc:mysql://localhost:3306/valkyrie_db";
+        env = Environment.LOCAL;
         username = "valkyrie_db";
         password = "valkyrie_db";
     }
@@ -43,7 +43,7 @@ public class MidPayloadSampler implements org.apache.jmeter.protocol.java.sample
     }
 
     private void createBinaries(String dir, int profileId, String[] dsns) {
-        BinaryManager bm = new BinaryManager(dir, new ValkyrieDAO(url, username, password));
+        BinaryManager bm = new BinaryManager(dir, new ValkyrieDAO(env, username, password));
 
         bm.writeBinaries(profileId, dsns);
     }

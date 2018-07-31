@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class CommandLineArgs {
 
     private boolean help;
-    private String connUrl = null;
     private String user = null;
     private String password = null;
     private String driver = null;
     private String filePath = null;
     private ArrayList<String> looseArgs = new ArrayList<>();
+    private Environment env = null;
 
     @Option
     @ShortSwitch("h")
@@ -24,18 +24,6 @@ public class CommandLineArgs {
 
     public boolean showHelp() {
         return this.help;
-    }
-
-    @Option
-    @ShortSwitch("c")
-    @LongSwitch("connUrl")
-    @SingleArgument
-    public void setConnUrl(String url) {
-        this.connUrl = url;
-    }
-
-    public String getConnUrl() {
-        return this.connUrl;
     }
 
     @Option
@@ -87,6 +75,28 @@ public class CommandLineArgs {
     }
 
     @Option
+    @ShortSwitch("e")
+    @LongSwitch("env")
+    @SingleArgument
+    public void setEnv(String env) {
+        switch (env) {
+            case "local":
+                this.env = Environment.LOCAL;
+                break;
+            case "dev":
+                this.env = Environment.DEV;
+                break;
+            case "qa":
+                this.env = Environment.QA;
+                break;
+        }
+    }
+
+    public Environment getEnv() {
+        return env;
+    }
+
+    @Option
     @LooseArguments
     public void setLooseArgs(String arg) {
         this.looseArgs.add(arg);
@@ -104,11 +114,11 @@ public class CommandLineArgs {
         helpMsgBuf.append("\tjava -jar AutomationTestTool.jar [options] clean [arguments] \n");
         helpMsgBuf.append("\n");
         helpMsgBuf.append("Options:\n");
-        helpMsgBuf.append("\t-c, --connUrl     Connection Url to use to connect to the database. Defaults to \"jdbc:mysql://qa-security-user.ckcpzgmqvbbt.us-east-1.rds.amazonaws.com\"\n");
         helpMsgBuf.append("\t-u, --user        The User to connect to the database with. Defaults to \"valkyrie_db\"\n");
         helpMsgBuf.append("\t-p, --password    Password to use for the database connection. Defaults to the password for the valkyrie_db user\n");
         helpMsgBuf.append("\t-d, --driver      Driver to use for database connection. Defaults to \"com.mysql.cj.jdbc.Driver\"\n");
         helpMsgBuf.append("\t-t, --targetDir   Where to store the generated binary files. Defaults to ./Binaries");
+        helpMsgBuf.append("\t-e, --env         What environment to use for API calls and database connections. 'local', 'dev', or 'qa'");
         helpMsgBuf.append("\n");
         helpMsgBuf.append("Actions:\n");
         helpMsgBuf.append("\tcreateBinaries    Create binaries for the given dsns that indicate successful installation of all packages for the given profile\n");

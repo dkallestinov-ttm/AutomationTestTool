@@ -4,15 +4,15 @@ public class BinaryManagerFactory {
 
     static BinaryManager create(CommandLineArgs args) {
         ValkyrieDAO dao;
-        if (args.getConnUrl() != null) {
+        if (args.getEnv() != null) {
             if (args.getUser() != null) {
                 if (args.getDriver() != null) {
-                    dao = new ValkyrieDAO(args.getConnUrl(), args.getUser(), args.getPassword(), args.getDriver());
+                    dao = new ValkyrieDAO(args.getEnv(), args.getUser(), args.getPassword(), args.getDriver());
                 } else {
-                    dao = new ValkyrieDAO(args.getConnUrl(), args.getUser(), args.getPassword());
+                    dao = new ValkyrieDAO(args.getEnv(), args.getUser(), args.getPassword());
                 }
             } else {
-                dao = new ValkyrieDAO(args.getConnUrl());
+                dao = new ValkyrieDAO(args.getEnv());
             }
         } else {
             if (args.getUser() != null) {
