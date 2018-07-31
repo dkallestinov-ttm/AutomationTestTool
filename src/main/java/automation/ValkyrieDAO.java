@@ -4,32 +4,45 @@ import java.sql.*;
 import java.util.*;
 
 public class ValkyrieDAO {
-    private static final String DEFAULT_CONN_URL = "jdbc:mysql://localhost:3306";
+    private static final String LOCAL_CONN_URL = "jdbc:mysql://localhost:3306/valkyrie_db";
+    private static final String DEV_CONN_URL = "jdbc:mysql://dev-security-user.ckcpzgmqvbbt.us-east-1.rds.amazonaws.com:3306/valkyrie_db";
+    private static final String QA_CONN_URL = "jdbc:mysql://qa-security-user.ckcpzgmqvbbt.us-east-1.rds.amazonaws.com:3306/valkyrie_db";
 
     private String connectionUrl;
     private String dbUser;
     private String dbPassword;
     private String driver;
 
-
     public ValkyrieDAO() {
-        this(DEFAULT_CONN_URL);
+        this(Environment.LOCAL);
     }
 
-    public ValkyrieDAO(String connectionUrl) {
-        this(connectionUrl, "valkyrie_db", "valkyrie_db");
+    public ValkyrieDAO(Environment env) {
+        this(env, "valkyrie_db", "valkyrie_db");
     }
 
     public ValkyrieDAO(String user, String password) {
-        this(DEFAULT_CONN_URL, user, password);
+        this(Environment.LOCAL, user, password);
     }
 
-    public ValkyrieDAO(String connectionUrl, String user, String password) {
-        this(connectionUrl, user, password, "com.mysql.cj.jdbc.Driver");
+    public ValkyrieDAO(Environment env, String user, String password) {
+        this(env, user, password, "com.mysql.cj.jdbc.Driver");
     }
 
-    public ValkyrieDAO(String connectionUrl, String user, String password, String driver) {
-        this.connectionUrl = connectionUrl;
+    public ValkyrieDAO(Environment env, String user, String password, String driver) {
+        switch (env) {
+            case LOCAL:
+                this.connectionUrl = LOCAL_CONN_URL;
+                break;
+            case DEV:
+                this.connectionUrl = DEV_CONN_URL;
+                break;
+            case QA:
+                this.connectionUrl = QA_CONN_URL;
+                break;
+            default:
+                throw new IllegalArgumentException("Unrecognized Environment - cannot connect to database");
+        }
         this.dbUser = user;
         this.dbPassword = password;
         this.driver = driver;
